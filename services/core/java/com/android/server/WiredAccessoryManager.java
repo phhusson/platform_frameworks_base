@@ -84,7 +84,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
     private final WiredAccessoryObserver mObserver;
     private final InputManagerService mInputManager;
 
-    private final boolean mUseDevInputEventForAudioJack;
+    private boolean mUseDevInputEventForAudioJack;
 
     public WiredAccessoryManager(Context context, InputManagerService inputManager) {
         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
@@ -120,6 +120,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
 
     @Override
     public void notifyWiredAccessoryChanged(long whenNanos, int switchValues, int switchMask) {
+        if(!mUseDevInputEventForAudioJack) return;
         if (LOG) Slog.v(TAG, "notifyWiredAccessoryChanged: when=" + whenNanos
                 + " bits=" + switchCodeToString(switchValues, switchMask)
                 + " mask=" + Integer.toHexString(switchMask));
@@ -363,6 +364,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
                 if (uei.checkSwitchExists()) {
                     retVal.add(uei);
                 } else {
+                    mUseDevInputEventForAudioJack = true;
                     Slog.w(TAG, "This kernel does not have wired headset support");
                 }
             }
