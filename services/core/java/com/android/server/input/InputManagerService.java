@@ -307,17 +307,10 @@ public class InputManagerService extends IInputManager.Stub
             SW_HEADPHONE_INSERT_BIT | SW_MICROPHONE_INSERT_BIT | SW_JACK_PHYSICAL_INSERT_BIT | SW_LINEOUT_INSERT_BIT;
     public static final int SW_CAMERA_LENS_COVER_BIT = 1 << SW_CAMERA_LENS_COVER;
 
-    /** Whether to use the dev/input/event or uevent subsystem for the audio jack. */
-    final boolean mUseDevInputEventForAudioJack;
-
     public InputManagerService(Context context) {
         this.mContext = context;
         this.mHandler = new InputManagerHandler(DisplayThread.get().getLooper());
 
-        mUseDevInputEventForAudioJack =
-                context.getResources().getBoolean(R.bool.config_useDevInputEventForAudioJack);
-        Slog.i(TAG, "Initializing input manager, mUseDevInputEventForAudioJack="
-                + mUseDevInputEventForAudioJack);
         mPtr = nativeInit(this, mContext, mHandler.getLooper().getQueue());
 
         String doubleTouchGestureEnablePath = context.getResources().getString(
@@ -1868,7 +1861,7 @@ public class InputManagerService extends IInputManager.Stub
             mWindowManagerCallbacks.notifyCameraLensCoverSwitchChanged(whenNanos, lensCovered);
         }
 
-        if (mUseDevInputEventForAudioJack && (switchMask & SW_JACK_BITS) != 0) {
+        if ((switchMask & SW_JACK_BITS) != 0) {
             mWiredAccessoryCallbacks.notifyWiredAccessoryChanged(whenNanos, switchValues,
                     switchMask);
         }
