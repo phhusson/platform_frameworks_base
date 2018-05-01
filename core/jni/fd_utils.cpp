@@ -118,7 +118,8 @@ bool FileDescriptorWhitelist::IsAllowed(const std::string& path) const {
        || android::base::StartsWith(path, kSystemOdmOverlayDir)
        || android::base::StartsWith(path, kOdmOverlayDir)
        || android::base::StartsWith(path, kSystemOemOverlayDir)
-       || android::base::StartsWith(path, kOemOverlayDir))
+       || android::base::StartsWith(path, kOemOverlayDir)
+       || android::base::StartsWith(path, "/system/overlay"))
       && android::base::EndsWith(path, kApkSuffix)
       && path.find("/../") == std::string::npos) {
     return true;
