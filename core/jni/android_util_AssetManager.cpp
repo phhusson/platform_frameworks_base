@@ -140,6 +140,10 @@ static jobjectArray NativeCreateIdmapsForStaticOverlaysTargetingAndroid(JNIEnv* 
     input_dirs.push_back(AssetManager::OEM_OVERLAY_DIR);
   }
 
+  if (stat("/system/overlay", &st) == 0) {
+    input_dirs.push_back("/system/overlay");
+  }
+
   if (input_dirs.empty()) {
     LOG(WARNING) << "no directories for idmap2 to scan";
     return env->NewObjectArray(0, g_stringClass, nullptr);
