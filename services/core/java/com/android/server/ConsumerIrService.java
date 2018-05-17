@@ -46,13 +46,6 @@ public class ConsumerIrService extends IConsumerIrService.Stub {
         mWakeLock.setReferenceCounted(true);
 
         mHasNativeHal = halOpen();
-        if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CONSUMER_IR)) {
-            if (!mHasNativeHal) {
-                throw new RuntimeException("FEATURE_CONSUMER_IR present, but no IR HAL loaded!");
-            }
-        } else if (mHasNativeHal) {
-            throw new RuntimeException("IR HAL present, but FEATURE_CONSUMER_IR is not set!");
-        }
     }
 
     @Override
