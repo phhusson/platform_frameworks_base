@@ -661,7 +661,13 @@ public class FingerprintService extends BiometricServiceBase {
                 final Fingerprint fingerprint =
                         new Fingerprint(getBiometricUtils().getUniqueName(getContext(), groupId),
                                 groupId, fingerId, deviceId);
-                FingerprintService.super.handleEnrollResult(fingerprint, remaining);
+
+                int remaining2 = remaining;
+                String fp = android.os.SystemProperties.get("ro.vendor.build.fingerprint");
+                if(fp != null && (fp.contains("starlte") || fp.contains("star2lte") || fp.contains("starqlte") || fp.contains("star2qlte")))
+                    remaining2 = 100 - remaining2;
+
+                FingerprintService.super.handleEnrollResult(fingerprint, remaining2);
             });
         }
 
