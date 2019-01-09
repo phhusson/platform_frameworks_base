@@ -103,7 +103,7 @@ static jint android_os_VintfObject_verify(JNIEnv* env, jclass, jobjectArray pack
         env->ReleaseStringUTFChars(element, cString);
     }
     std::string error;
-    int32_t status = VintfObject::CheckCompatibility(cPackageInfo, &error);
+    int32_t status = VintfObject::CheckCompatibility(cPackageInfo, &error, vintf::DISABLE_AVB_CHECK);
     if (status)
         LOG(WARNING) << "VintfObject.verify() returns " << status << ": " << error;
     return status;
