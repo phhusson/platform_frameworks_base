@@ -183,6 +183,8 @@ cc_defaults {
         "android.system.suspend.control.internal-cpp",
         "android.system.suspend@1.0",
         "service.incremental",
+        "vendor.samsung.hardware.light@2.0",
+        "vendor.samsung.hardware.light@3.0",
     ],
 
     static_libs: [
