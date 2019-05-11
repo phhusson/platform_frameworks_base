@@ -30,12 +30,14 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
 
     private CellIdentityGsm mCellIdentityGsm;
     private CellSignalStrengthGsm mCellSignalStrengthGsm;
+    private String mOriginalOperatorNumeric;
 
     /** @hide */
     public CellInfoGsm() {
         super();
         mCellIdentityGsm = new CellIdentityGsm();
         mCellSignalStrengthGsm = new CellSignalStrengthGsm();
+        mOriginalOperatorNumeric = "";
     }
 
     /** @hide */
@@ -43,6 +45,7 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         super(ci);
         this.mCellIdentityGsm = ci.mCellIdentityGsm.copy();
         this.mCellSignalStrengthGsm = ci.mCellSignalStrengthGsm.copy();
+        this.mOriginalOperatorNumeric = ci.mOriginalOperatorNumeric;
     }
 
     public CellIdentityGsm getCellIdentity() {
@@ -61,12 +64,21 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         mCellSignalStrengthGsm = css;
     }
 
+    /** @hide */
+    public String getOriginalOperatorNumeric() {
+        return mOriginalOperatorNumeric;
+    }
+    /** @hide */
+    public void setOriginalOperatorNumeric(String operatorNumeric) {
+        mOriginalOperatorNumeric = operatorNumeric;
+    }
+
     /**
      * @return hash code
      */
     @Override
     public int hashCode() {
-        return super.hashCode() + mCellIdentityGsm.hashCode() + mCellSignalStrengthGsm.hashCode();
+        return super.hashCode() + mCellIdentityGsm.hashCode() + mCellSignalStrengthGsm.hashCode() + mOriginalOperatorNumeric.hashCode();
     }
 
     @Override
@@ -77,7 +89,8 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         try {
             CellInfoGsm o = (CellInfoGsm) other;
             return mCellIdentityGsm.equals(o.mCellIdentityGsm)
-                    && mCellSignalStrengthGsm.equals(o.mCellSignalStrengthGsm);
+                    && mCellSignalStrengthGsm.equals(o.mCellSignalStrengthGsm)
+                    && mOriginalOperatorNumeric.equals(o.mOriginalOperatorNumeric);
         } catch (ClassCastException e) {
             return false;
         }
@@ -91,6 +104,7 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         sb.append(super.toString());
         sb.append(" ").append(mCellIdentityGsm);
         sb.append(" ").append(mCellSignalStrengthGsm);
+        sb.append(" mOriginalOperatorNumeric=").append(mOriginalOperatorNumeric);
         sb.append("}");
 
         return sb.toString();
@@ -108,6 +122,7 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         super.writeToParcel(dest, flags, TYPE_GSM);
         mCellIdentityGsm.writeToParcel(dest, flags);
         mCellSignalStrengthGsm.writeToParcel(dest, flags);
+        dest.writeString(mOriginalOperatorNumeric);
     }
 
     /**
@@ -118,6 +133,7 @@ public final class CellInfoGsm extends CellInfo implements Parcelable {
         super(in);
         mCellIdentityGsm = CellIdentityGsm.CREATOR.createFromParcel(in);
         mCellSignalStrengthGsm = CellSignalStrengthGsm.CREATOR.createFromParcel(in);
+        mOriginalOperatorNumeric = in.readString();
     }
 
     /** Implement the Parcelable interface */
