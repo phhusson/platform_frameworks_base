@@ -158,6 +158,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
     private final IBatteryStats mBatteryStats;
 
     // The lights service.
+    private static final boolean mDisableButtonsLight = android.os.SystemProperties.getBoolean("persist.sys.phh.disable_buttons_light", false);
     private final LightsManager mLights;
 
     // The sensor manager.
@@ -861,12 +862,14 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         if (state == Display.STATE_OFF) {
             brightness = PowerManager.BRIGHTNESS_OFF;
             mBrightnessReasonTemp.setReason(BrightnessReason.REASON_SCREEN_OFF);
-            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
+            if(!mDisableButtonsLight)
+                mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
         }
 
         // Disable button lights when dozing
         if (state == Display.STATE_DOZE || state == Display.STATE_DOZE_SUSPEND) {
-            mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(PowerManager.BRIGHTNESS_OFF);
+            if(!mDisableButtonsLight)
+                mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(PowerManager.BRIGHTNESS_OFF);
         }
 
         // Always use the VR brightness when in the VR state.
