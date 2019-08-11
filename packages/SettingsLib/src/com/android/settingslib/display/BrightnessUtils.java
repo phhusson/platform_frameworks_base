@@ -51,7 +51,12 @@ public class BrightnessUtils {
      * @param max The maximum acceptable value for the setting.
      * @return The corresponding setting value.
      */
+    private static final boolean useLinearBrightness = android.os.SystemProperties.getBoolean("persist.sys.phh.linear_brightness", false);
     public static final int convertGammaToLinear(int val, int min, int max) {
+        if(useLinearBrightness) {
+            if(val < 4) return 1;
+            return val/4;
+        }
         final float normalizedVal = MathUtils.norm(GAMMA_SPACE_MIN, GAMMA_SPACE_MAX, val);
         final float ret;
         if (normalizedVal <= R) {
@@ -127,6 +132,7 @@ public class BrightnessUtils {
      * @return The corresponding slider value
      */
     public static final int convertLinearToGammaFloat(float val, float min, float max) {
+        if(useLinearBrightness) return (int)(val*4);
         // For some reason, HLG normalizes to the range [0, 12] rather than [0, 1]
         final float normalizedVal = MathUtils.norm(min, max, val) * 12;
         final float ret;
