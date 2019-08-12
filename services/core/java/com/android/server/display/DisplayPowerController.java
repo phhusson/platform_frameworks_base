@@ -1700,6 +1700,27 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
                 ? Sensor.TYPE_PROXIMITY : SensorUtils.NO_FALLBACK;
         mProximitySensor = SensorUtils.findSensor(mSensorManager, proxSensor.type, proxSensor.name,
                 fallbackType);
+        if(mProximitySensor == null) {
+            java.util.List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+            for(Sensor sensor: sensors) {
+                if("com.samsung.sensor.physical_proximity".equals(sensor.getStringType()))
+                    mProximitySensor = sensor;
+            }
+        }
+        if(mProximitySensor == null) {
+            java.util.List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+            for(Sensor sensor: sensors) {
+                if("com.samsung.sensor.hover_proximity".equals(sensor.getStringType()))
+                    mProximitySensor = sensor;
+            }
+        }
+        if(mProximitySensor == null) {
+            java.util.List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+            for(Sensor sensor: sensors) {
+                if("com.samsung.sensor.touch_proximity".equals(sensor.getStringType()))
+                    mProximitySensor = sensor;
+            }
+        }
         if (mProximitySensor != null) {
             mProximityThreshold = Math.min(mProximitySensor.getMaximumRange(),
                     TYPICAL_PROXIMITY_THRESHOLD);
@@ -2465,6 +2486,20 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         public void onSensorChanged(SensorEvent event) {
             if (mProximitySensorEnabled) {
                 final long time = SystemClock.uptimeMillis();
+                if("com.samsung.sensor.touch_proximity".equals(mProximitySensor.getStringType())) {
+                    int v = (int)event.values[0];
+                    boolean positive = (v <= 4);
+                    android.util.Log.d("PHH", "Samsung sensor changed " + positive + ":" + v);
+                    handleProximitySensorEvent(time, positive);
+                    return;
+                }
+                if("com.samsung.sensor.hover_proximity".equals(mProximitySensor.getStringType())) {
+                    float v = event.values[0];
+                    boolean positive = (v >= 0.5f && v <= 4.5);
+                    android.util.Log.d("PHH", "Samsung hover sensor changed " + positive + ":" + v);
+                    handleProximitySensorEvent(time, positive);
+                    return;
+                }
                 final float distance = event.values[0];
                 boolean positive = distance >= 0.0f && distance < mProximityThreshold;
                 handleProximitySensorEvent(time, positive);
