@@ -1353,6 +1353,7 @@ public class PackageParser {
         } catch (PackageParserException e) {
             throw e;
         } catch (Exception e) {
+            android.util.Log.d("PHH", "failed reading manifest because of", e);
             throw new PackageParserException(INSTALL_PARSE_FAILED_UNEXPECTED_EXCEPTION,
                     "Failed to read manifest from " + apkPath, e);
         } finally {
@@ -1392,6 +1393,7 @@ public class PackageParser {
         } catch (PackageParserException e) {
             throw e;
         } catch (Exception e) {
+            android.util.Log.d("PHH", "failed reading manifest because of", e);
             throw new PackageParserException(INSTALL_PARSE_FAILED_UNEXPECTED_EXCEPTION,
                     "Failed to read manifest from " + apkPath, e);
         } finally {
@@ -2556,7 +2558,12 @@ public class PackageParser {
 
         // check property value - make sure it is both set and equal to expected value
         final String currValue = SystemProperties.get(propName);
-        return (currValue != null && currValue.equals(propValue));
+        if(propValue.charAt(0) == '+') {
+            String valRegexp = propValue.replace("*", ".*").substring(1);
+            return currValue != null && currValue.matches(valRegexp);
+        } else {
+            return (currValue != null && currValue.equals(propValue));
+        }
     }
 
     /**
