@@ -5609,7 +5609,7 @@ public class ActivityManagerService extends IActivityManager.Stub
         // TODO: Switch to user app stacks here.
         int ret = mActivityStartController.startActivities(caller, -1, 0,
                 UserHandle.USER_NULL, callingPackage, intents, resolvedTypes, resultTo,
-                SafeActivityOptions.fromBundle(bOptions), userId, reason);
+                SafeActivityOptions.fromBundle(bOptions), userId, reason, null);
         return ret;
     }
 

@@ -285,42 +285,34 @@ public class ActivityStartController {
      */
     final int startActivitiesInPackage(int uid, String callingPackage, Intent[] intents,
             String[] resolvedTypes, IBinder resultTo, SafeActivityOptions options, int userId,
-<<<<<<< HEAD
             boolean validateIncomingUser, PendingIntentRecord originatingPendingIntent) {
-=======
-            boolean validateIncomingUser) {
         return startActivitiesInPackage(uid, 0, UserHandle.USER_NULL,
              callingPackage, intents, resolvedTypes, resultTo, options, userId,
-             validateIncomingUser);
+             validateIncomingUser, originatingPendingIntent);
     }
->>>>>>> android-9.0.0_r49
 
     final int startActivitiesInPackage(int uid, int realCallingPid, int realCallingUid,
             String callingPackage, Intent[] intents, String[] resolvedTypes, IBinder resultTo,
-            SafeActivityOptions options, int userId, boolean validateIncomingUser) {
+            SafeActivityOptions options, int userId, boolean validateIncomingUser, PendingIntentRecord originatingPendingIntent) {
         final String reason = "startActivityInPackage";
 
         userId = checkTargetUser(userId, validateIncomingUser, Binder.getCallingPid(),
                 Binder.getCallingUid(), reason);
 
-        // TODO: Switch to user app stacks here.
-<<<<<<< HEAD
-        return startActivities(null, uid, callingPackage, intents, resolvedTypes, resultTo, options,
-                userId, reason, originatingPendingIntent);
+        return startActivities(null, uid, realCallingPid, realCallingUid, callingPackage, intents,
+                resolvedTypes, resultTo, options, userId, reason, originatingPendingIntent);
     }
 
     int startActivities(IApplicationThread caller, int callingUid, String callingPackage,
             Intent[] intents, String[] resolvedTypes, IBinder resultTo, SafeActivityOptions options,
             int userId, String reason, PendingIntentRecord originatingPendingIntent) {
-=======
-        return startActivities(null, uid, realCallingPid, realCallingUid, callingPackage, intents,
-                resolvedTypes, resultTo, options, userId, reason);
+        return startActivities(null, callingUid, 0, 0, callingPackage, intents,
+                resolvedTypes, resultTo, options, userId, reason, originatingPendingIntent);
     }
 
     int startActivities(IApplicationThread caller, int callingUid, int incomingRealCallingPid,
             int incomingRealCallingUid, String callingPackage, Intent[] intents, String[] resolvedTypes,
-            IBinder resultTo, SafeActivityOptions options, int userId, String reason) {
->>>>>>> android-9.0.0_r49
+            IBinder resultTo, SafeActivityOptions options, int userId, String reason, PendingIntentRecord originatingPendingIntent) {
         if (intents == null) {
             throw new NullPointerException("intents is null");
         }
