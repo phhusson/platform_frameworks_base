@@ -114,6 +114,20 @@ public class FacolaView extends ImageView implements OnTouchListener {
         }
     }
 
+    private final File oppoFod = new File("/sys/kernel/oppo_display/notify_fppress");
+    private void oppoPress(boolean pressed) {
+        if(!oppoFod.exists()) return;
+        try {
+            String v = "0";
+            if(pressed) v = "1";
+            PrintWriter writer = new PrintWriter(oppoFod, "UTF-8");
+            writer.println(v);
+            writer.close();
+        } catch(Exception e) {
+            Slog.d("PHH", "Failed to notify oppo fp press", e);
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -131,9 +145,11 @@ public class FacolaView extends ImageView implements OnTouchListener {
             } catch(Exception e) {
                 Slog.d("PHH-Enroll", "Failed calling xiaomi fp extcmd");
             }
+            oppoPress(true);
 
             canvas.drawCircle(mW/2, mH/2, (float) (mW/2.0f), this.mPaintFingerprint);
         } else {
+            oppoPress(false);
             try {
                 if(mXiaomiFingerprint != null) {
                     mXiaomiFingerprint.extCmd(0xa, 0);
