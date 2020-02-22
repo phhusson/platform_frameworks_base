@@ -73,7 +73,11 @@ public class FacolaView extends ImageView implements OnTouchListener {
 
         noDim = android.os.SystemProperties.getBoolean("persist.sys.phh.nodim", false);
         String[] location = android.os.SystemProperties.get("persist.vendor.sys.fp.fod.location.X_Y", "").split(",");
+        if(location.length == 0)
+            location = android.os.SystemProperties.get("persist.sys.fp.fod.location.X_Y", "").split(",");
         String[] size = android.os.SystemProperties.get("persist.vendor.sys.fp.fod.size.width_height", "").split(",");
+        if(size.length == 0)
+            size = android.os.SystemProperties.get("persist.sys.fp.fod.size.width_height", "").split(",");
         Slog.d("PHH-Enroll", "FacolaView hello");
         if(size.length == 2 && location.length == 2) {
             Slog.d("PHH-Enroll", "Got real values");
