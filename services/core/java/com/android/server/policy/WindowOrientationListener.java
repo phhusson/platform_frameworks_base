@@ -1055,6 +1055,9 @@ public abstract class WindowOrientationListener {
 
             synchronized (mLock) {
                 mDesiredRotation = reportedRotation;
+                if(mDesiredRotation >= 4 || mDesiredRotation < 0) {
+                    mDesiredRotation = 0;
+                }
                 newRotation = evaluateRotationChangeLocked();
             }
             if (newRotation >=0) {
