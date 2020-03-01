@@ -1049,6 +1049,9 @@ public abstract class WindowOrientationListener {
             int newRotation;
             synchronized (mLock) {
                 mDesiredRotation = (int) event.values[0];
+                if(mDesiredRotation >= 4 || mDesiredRotation < 0) {
+                    mDesiredRotation = 0;
+                }
                 newRotation = evaluateRotationChangeLocked();
             }
             if (newRotation >=0) {
