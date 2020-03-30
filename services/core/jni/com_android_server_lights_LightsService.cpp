@@ -26,6 +26,7 @@
 #include <vendor/samsung/hardware/light/2.0/types.h>
 #include <vendor/samsung/hardware/light/3.0/ISehLight.h>
 #include <vendor/samsung/hardware/light/3.0/types.h>
+#include <vendor/huawei/hardware/light/2.0/ILight.h>
 #include <android-base/chrono_utils.h>
 #include <utils/misc.h>
 #include <utils/Log.h>
@@ -48,11 +49,15 @@ using SecType    = ::vendor::samsung::hardware::light::V2_0::SecType;
 using ISehLight  = ::vendor::samsung::hardware::light::V3_0::ISehLight;
 using SehType    = ::vendor::samsung::hardware::light::V3_0::SehType;
 using SehLightState = ::vendor::samsung::hardware::light::V3_0::SehLightState;
+using ILightHw   = ::vendor::huawei::hardware::light::V2_0::ILight;
+using LightStateHw = ::android::hardware::light::V2_0::LightState;
 static bool sLightSupported = true;
 
 static sp<ISecLight> sSecHal;
 static sp<ISehLight> sSehHal;
 static bool sSecTried = false;
+static sp<ILightHw> sHwHal;
+static bool sHwTried = false;
 
 static bool validate(jint light, jint flash, jint brightness) {
     bool valid = true;
@@ -190,6 +195,31 @@ static void setLight_native(
             if (t.duration() > 50ms) ALOGD("Excessive delay setting light");
         }
 	return;
+    }
+
+    if (!sHwTried) {
+        sHwHal = ILightHw::getService();
+        //sHwTried = true;
+    }
+
+    if (sHwHal != nullptr && light == 0) {
+        ALOGE("sHwHal triggered!");
+        int brightness = colorARGB & 0xff;
+        int hwBrightness = brightness << 4;
+        LightState state = constructState(hwBrightness, flashMode, onMS, offMS, brightnessMode);
+        bool got260 = false;
+        sHwHal->HWgetSupportedTypes([&](auto types) {
+            for (const auto& type: types) {
+                if (type == 260) {
+                    ALOGE("sHwHal reports 260 as a supported type");
+                    got260 = true;
+                }
+            }
+        });
+        if (got260) {
+            sHwHal->HWsetLight(260, state);
+            return;
+        }
     }
 
     Type type = static_cast<Type>(light);
