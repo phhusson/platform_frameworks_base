@@ -171,6 +171,7 @@ cc_defaults {
         "vendor.samsung.hardware.miscpower@2.0",
         "vendor.samsung.hardware.light@2.0",
         "vendor.samsung.hardware.light@3.0",
+        "vendor.huawei.hardware.light@2.0",
     ],
 
     static_libs: [
