@@ -4146,14 +4146,8 @@ public class UserManagerService extends IUserManager.Stub {
 
     @VisibleForTesting
     static int getMaxManagedProfiles() {
-        // Allow overriding max managed profiles on debuggable builds for testing
-        // of multiple profiles.
-        if (!Build.IS_DEBUGGABLE) {
-            return MAX_MANAGED_PROFILES;
-        } else {
-            return SystemProperties.getInt("persist.sys.max_profiles",
-                    MAX_MANAGED_PROFILES);
-        }
+	return SystemProperties.getInt("persist.sys.max_profiles",
+            MAX_MANAGED_PROFILES);
     }
 
     @GuardedBy("mUsersLock")
