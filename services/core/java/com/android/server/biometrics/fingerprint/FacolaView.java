@@ -307,6 +307,7 @@ public class FacolaView extends ImageView implements OnTouchListener {
         writeFile("/sys/kernel/oppo_display/dimlayer_hbm", "1");
         if(samsungFod) {
             samsungCmd("fod_enable,1,1");
+            samsungCmd("fod_enable,1,1,0");
         }
         if(mX == -1 || mY == -1 || mW == -1 || mH == -1) return;
 
