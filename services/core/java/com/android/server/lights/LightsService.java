@@ -30,10 +30,14 @@ import android.view.SurfaceControl;
 import com.android.server.SystemService;
 
 public class LightsService extends SystemService {
+    public interface OnBacklightChange {
+        void onBacklightChange(int newBacklight);
+    }
     static final String TAG = "LightsService";
     static final boolean DEBUG = false;
 
     final LightImpl mLights[] = new LightImpl[LightsManager.LIGHT_ID_COUNT];
+    public static OnBacklightChange backlightChangeListener;
 
     private final class LightImpl extends Light {
 
@@ -90,6 +94,7 @@ public class LightsService extends SystemService {
                             (float) brightness / mSurfaceControlMaximumBrightness);
 		    return;
                 }
+                if(mId == 0 && backlightChangeListener != null) backlightChangeListener.onBacklightChange(brightness);
 
                 if(mId == 0) {
                     String fp = SystemProperties.get("ro.vendor.build.fingerprint", "hello");
