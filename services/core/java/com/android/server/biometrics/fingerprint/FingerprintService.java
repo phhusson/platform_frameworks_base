@@ -176,7 +176,6 @@ public class FingerprintService extends BiometricServiceBase {
         @Override
         public boolean onAcquired(int acquiredInfo, int vendorCode) {
             boolean result = super.onAcquired(acquiredInfo, vendorCode);
-            android.util.Log.d("PHH-Enroll", "acquired ret " + result);
             if(result) mFacola.hide();
             return result;
         }
@@ -185,7 +184,6 @@ public class FingerprintService extends BiometricServiceBase {
         public boolean onAuthenticated(BiometricAuthenticator.Identifier identifier,
             boolean authenticated, ArrayList<Byte> token) {
             boolean result = super.onAuthenticated(identifier, authenticated, token);
-            android.util.Log.d("PHH-Enroll", "auth-ed ret " + result);
             if(result) mFacola.hide();
             return result;
         }
@@ -744,6 +742,7 @@ public class FingerprintService extends BiometricServiceBase {
                 Slog.w(TAG, "enroll(): no fingerprint HAL!");
                 return ERROR_ESRCH;
             }
+            mFacola.show();
             return daemon.enroll(cryptoToken, groupId, timeout);
         }
 
@@ -990,7 +989,6 @@ public class FingerprintService extends BiometricServiceBase {
             Slog.w(TAG, "startPreEnroll: no fingerprint HAL!");
             return 0;
         }
-        mFacola.show();
         try {
             return daemon.preEnroll();
         } catch (RemoteException e) {
