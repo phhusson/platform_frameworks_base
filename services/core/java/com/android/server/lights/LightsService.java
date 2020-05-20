@@ -77,7 +77,7 @@ public class LightsService extends SystemService {
                 // right now we just fall back to the old path through Lights brightessMode is
                 // anything but USER or the device shouldBeInLowPersistenceMode().
                 if (brightnessMode == BRIGHTNESS_MODE_USER && !shouldBeInLowPersistenceMode()
-                        && mSurfaceControlMaximumBrightness == 255) {
+                        && mSurfaceControlMaximumBrightness == 255 && mId == 0) {
                     // TODO: the last check should be mSurfaceControlMaximumBrightness != 0; the
                     // reason we enforce 255 right now is to stay consistent with the old path. In
                     // the future, the framework should be refactored so that brightness is a float
