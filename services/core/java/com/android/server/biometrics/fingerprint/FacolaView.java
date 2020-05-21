@@ -81,8 +81,6 @@ public class FacolaView extends ImageView implements OnTouchListener {
 
     private java.util.ArrayList<Object> objectsToKeep = new java.util.ArrayList();
 
-    private static boolean doneCalibrationOnce = true;
-
     private boolean mFullGreenDisplayed = false;
     private final View mFullGreen;
     private boolean mHidden = true;
@@ -297,6 +295,7 @@ public class FacolaView extends ImageView implements OnTouchListener {
         String xiaomiFodReadyPath = "/sys/class/drm/card0-DSI-1/fod_ui_ready";
         if(new File(xiaomiFodReadyPath).exists()) {
             xiaomiAsynchronous = true;
+            noDim = true;
             FileObserver xiaomiUiReadyCb = new FileObserver(xiaomiFodReadyPath, FileObserver.MODIFY) {
                 @Override
                 public void onEvent(int event, String path) {
