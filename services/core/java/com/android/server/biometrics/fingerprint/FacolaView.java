@@ -170,37 +170,35 @@ public class FacolaView extends ImageView implements OnTouchListener {
         mPaintShow.setColor(Color.argb(0x18, 0x00, 0xff, 0x00));
         setOnTouchListener(this);
         Slog.d("PHH-Enroll", "Created facola...");
-        if(mW != -1) {
-            try {
-                mXiaomiFingerprint = IXiaomiFingerprint.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting xiaomi fingerprint service", e);
-            }
-            try {
-                mGoodixFingerprint = IGoodixFPExtendService.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting goodix fingerprint service", e);
-            }
-            try {
-                mGoodixFingerprintV2_1 = vendor.goodix.hardware.biometrics.fingerprint.V2_1.IGoodixFingerprintDaemon.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting goodix2 fingerprint service", e);
-            }
-            try {
-                mSamsungFingerprint = ISecBiometricsFingerprint.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting samsung fingerprint service", e);
-            }
-            try {
-                mSamsungFingerprint3_0 = ISehBiometricsFingerprint.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting samsung 3.0 fingerprint service", e);
-            }
-            try {
-                mOppoFingerprint = vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
-            } catch(Exception e) {
-                Slog.d("PHH-Enroll", "Failed getting oppo fingerprint service", e);
-            }
+        try {
+            mXiaomiFingerprint = IXiaomiFingerprint.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting xiaomi fingerprint service", e);
+        }
+        try {
+            mGoodixFingerprint = IGoodixFPExtendService.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting goodix fingerprint service", e);
+        }
+        try {
+            mGoodixFingerprintV2_1 = vendor.goodix.hardware.biometrics.fingerprint.V2_1.IGoodixFingerprintDaemon.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting goodix2 fingerprint service", e);
+        }
+        try {
+            mSamsungFingerprint = ISecBiometricsFingerprint.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting samsung fingerprint service", e);
+        }
+        try {
+            mSamsungFingerprint3_0 = ISehBiometricsFingerprint.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting samsung 3.0 fingerprint service", e);
+        }
+        try {
+            mOppoFingerprint = vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
+        } catch(Exception e) {
+            Slog.d("PHH-Enroll", "Failed getting oppo fingerprint service", e);
         }
 
         if(mSamsungFingerprint3_0 != null || mSamsungFingerprint != null) {
