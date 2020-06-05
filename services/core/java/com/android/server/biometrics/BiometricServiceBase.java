@@ -732,10 +732,12 @@ public abstract class BiometricServiceBase extends SystemService
         if (client != null && client.onAuthenticated(identifier, authenticated, token)) {
             removeClient(client);
         }
-        if (authenticated) {
-            mPerformanceStats.accept++;
-        } else {
-            mPerformanceStats.reject++;
+        if(mPerformanceStats != null) {
+            if (authenticated) {
+                mPerformanceStats.accept++;
+            } else {
+                mPerformanceStats.reject++;
+            }
         }
     }
 
