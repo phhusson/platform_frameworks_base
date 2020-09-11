@@ -15,6 +15,7 @@
  */
 
 #include <dirent.h>
+#include <fnmatch.h>
 
 #include <fstream>
 #include <memory>
@@ -187,7 +188,11 @@ Result<Unit> Scan(const std::vector<std::string>& args) {
       // if property set & equal to value, then include overlay - otherwise skip
       if (android::base::GetProperty(overlay_info->requiredSystemPropertyName, "") !=
           overlay_info->requiredSystemPropertyValue) {
-        continue;
+          
+        auto osValue = android::base::GetProperty(overlay_info->requiredSystemPropertyName, "");
+        if(fnmatch(overlay_info->requiredSystemPropertyValue.c_str()+1, osValue.c_str(), 0) != 0) {
+          continue;
+        }
       }
     }
 
