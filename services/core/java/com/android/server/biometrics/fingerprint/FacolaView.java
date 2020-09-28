@@ -213,6 +213,9 @@ public class FacolaView extends ImageView implements OnTouchListener {
                 brightnessFile = "/sys/class/lcd/panel/device/backlight/panel/brightness";
 
             String maskBrightnessStr = readFile("/sys/class/lcd/panel/mask_brightness");
+            if(maskBrightnessStr == null) {
+                maskBrightnessStr = readFile("/sys/class/backlight/panel0-backlight/max_brightness");
+            }
             String actualMaskBrightnessPath = "/sys/class/lcd/panel/actual_mask_brightness";
 
             Slog.d("PHH-Enroll", "Got fod position, mask brightness " + fodPositionString + ", " + maskBrightnessStr);
