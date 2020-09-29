@@ -914,9 +914,11 @@ public final class PowerManagerService extends SystemService
 
         if (min == INVALID_BRIGHTNESS_IN_CONFIG || max == INVALID_BRIGHTNESS_IN_CONFIG
                 || def == INVALID_BRIGHTNESS_IN_CONFIG) {
+            int correctedMin = mContext.getResources().getInteger(com.android.internal.R.integer
+                            .config_screenBrightnessSettingMinimum);
+            if(correctedMin == 0) correctedMin = 1;
             mScreenBrightnessMinimum = BrightnessSynchronizer.brightnessIntToFloat(
-                    mContext.getResources().getInteger(com.android.internal.R.integer
-                            .config_screenBrightnessSettingMinimum),
+                    correctedMin,
                     PowerManager.BRIGHTNESS_OFF + 1, PowerManager.BRIGHTNESS_ON,
                     PowerManager.BRIGHTNESS_MIN, PowerManager.BRIGHTNESS_MAX);
             mScreenBrightnessMaximum = BrightnessSynchronizer.brightnessIntToFloat(
