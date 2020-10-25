@@ -2476,8 +2476,17 @@ public class PackageParser {
         for (int i = 0; i < propNames.length; i++) {
             // Check property value: make sure it is both set and equal to expected value
             final String currValue = SystemProperties.get(propNames[i]);
-            if (!TextUtils.equals(currValue, propValues[i])) {
-                return false;
+            final String value = propValues[i];
+            if(value.startsWith("+")) {
+                final java.util.regex.Pattern regex = java.util.regex.Pattern.compile(value.substring(1, value.length()).replace("*", ".*"));
+                java.util.regex.Matcher matcher = regex.matcher(currValue);
+                if (!matcher.find()) {
+                    return false;
+                }
+            } else {
+                if(!value.equals(currValue)) {
+                    return false;
+                }
             }
         }
         return true;
