@@ -31,6 +31,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.provider.AlarmClock;
 import android.provider.Settings;
 import android.service.notification.ZenModeConfig;
@@ -339,8 +340,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         Resources resources = mContext.getResources();
         updateMinimumHeight();
 
-        mRoundedCornerPadding = resources.getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
+        mRoundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(mRoundedCornerPadding == -1)
+            mRoundedCornerPadding = resources.getDimensionPixelSize(
+                    R.dimen.rounded_corner_content_padding);
         mStatusBarPaddingTop = resources.getDimensionPixelSize(R.dimen.status_bar_padding_top);
 
         // Update height for a few views, especially due to landscape mode restricting space.
