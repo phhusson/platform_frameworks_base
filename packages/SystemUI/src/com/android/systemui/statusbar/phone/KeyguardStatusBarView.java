@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.UserManager;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -180,8 +181,10 @@ public class KeyguardStatusBarView extends RelativeLayout {
                 R.dimen.display_cutout_margin_consumption);
         mShowPercentAvailable = getContext().getResources().getBoolean(
                 com.android.internal.R.bool.config_battery_percentage_setting_available);
-        mRoundedCornerPadding = res.getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
+        mRoundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(mRoundedCornerPadding == -1)
+            mRoundedCornerPadding = res.getDimensionPixelSize(
+                    R.dimen.rounded_corner_content_padding);
     }
 
     private void updateVisibilities() {
