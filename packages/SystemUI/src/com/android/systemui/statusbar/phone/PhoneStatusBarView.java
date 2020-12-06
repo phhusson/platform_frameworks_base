@@ -24,6 +24,7 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.util.EventLog;
 import android.util.Pair;
@@ -287,8 +288,10 @@ public class PhoneStatusBarView extends PanelBar {
     public void updateResources() {
         mCutoutSideNudge = getResources().getDimensionPixelSize(
                 R.dimen.display_cutout_margin_consumption);
-        mRoundedCornerPadding = getResources().getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
+        mRoundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(mRoundedCornerPadding == -1)
+            mRoundedCornerPadding = getResources().getDimensionPixelSize(
+                    R.dimen.rounded_corner_content_padding);
 
         updateStatusBarHeight();
     }
