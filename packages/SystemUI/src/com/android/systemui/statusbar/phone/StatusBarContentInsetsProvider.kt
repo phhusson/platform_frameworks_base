@@ -23,7 +23,7 @@ import android.graphics.Rect
 import android.util.LruCache
 import android.util.Pair
 import android.view.DisplayCutout
-
+import android.os.SystemProperties
 import androidx.annotation.VisibleForTesting
 
 import com.android.internal.policy.SystemBarUtils
@@ -227,7 +227,9 @@ class StatusBarContentInsetsProvider @Inject constructor(
         val dc = context.display.cutout
         val currentRotation = getExactRotation(context)
 
-        val roundedCornerPadding = rotatedResources
+        var roundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(roundedCornerPadding == -1)
+            roundedCornerPadding = rotatedResources
                 .getDimensionPixelSize(R.dimen.rounded_corner_content_padding)
         val minDotPadding = if (isPrivacyDotEnabled)
                 rotatedResources.getDimensionPixelSize(R.dimen.ongoing_appops_dot_min_padding)
