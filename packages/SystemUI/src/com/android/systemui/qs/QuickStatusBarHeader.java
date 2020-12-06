@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.DisplayCutout;
@@ -234,8 +235,10 @@ public class QuickStatusBarHeader extends FrameLayout {
 
         mConfigShowBatteryEstimate = resources.getBoolean(R.bool.config_showBatteryEstimateQSBH);
 
-        mRoundedCornerPadding = resources.getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
+        mRoundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(mRoundedCornerPadding == -1)
+            mRoundedCornerPadding = resources.getDimensionPixelSize(
+                    R.dimen.rounded_corner_content_padding);
 
         int qsOffsetHeight = resources.getDimensionPixelSize(
                 com.android.internal.R.dimen.quick_qs_offset_height);

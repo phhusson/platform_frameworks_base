@@ -25,6 +25,7 @@ import android.view.DisplayCutout
 import android.view.View.LAYOUT_DIRECTION_RTL
 import android.view.WindowManager
 import android.view.WindowMetrics
+import android.os.SystemProperties
 import androidx.annotation.VisibleForTesting
 import com.android.systemui.Dumpable
 import com.android.systemui.R
@@ -157,7 +158,9 @@ class StatusBarContentInsetsProvider @Inject constructor(
         val currentRotation = RotationUtils.getExactRotation(context)
 
         val isRtl = rotatedResources.configuration.layoutDirection == LAYOUT_DIRECTION_RTL
-        val roundedCornerPadding = rotatedResources
+        var roundedCornerPadding = SystemProperties.getInt("persist.sys.phh.rounded_corners_padding", -1);
+        if(roundedCornerPadding == -1)
+            roundedCornerPadding = rotatedResources
                 .getDimensionPixelSize(R.dimen.rounded_corner_content_padding)
         val minDotWidth = rotatedResources
                 .getDimensionPixelSize(R.dimen.ongoing_appops_dot_min_padding)
