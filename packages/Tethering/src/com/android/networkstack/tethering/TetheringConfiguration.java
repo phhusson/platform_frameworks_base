@@ -132,7 +132,7 @@ public class TetheringConfiguration {
         tetherableBluetoothRegexs = getResourceStringArray(
                 res, R.array.config_tether_bluetooth_regexs);
 
-        isDunRequired = checkDunRequired(ctx);
+        isDunRequired = false;
 
         chooseUpstreamAutomatically = getResourceBoolean(
                 res, R.bool.config_tether_upstream_automatic, false /** defaultValue */);
