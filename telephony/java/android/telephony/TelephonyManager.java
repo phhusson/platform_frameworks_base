@@ -7107,7 +7107,7 @@ public class TelephonyManager {
      * @hide
      */
     @UnsupportedAppUsage
-    public static void setTelephonyProperty(int phoneId, String property, String value) {
+    public static void setTelephonyProperty(int phoneId, @NonNull String property, @Nullable String value) {
         String propVal = "";
         String p[] = null;
         String prop = SystemProperties.get(property);
@@ -7161,7 +7161,8 @@ public class TelephonyManager {
      *
      * @hide
      */
-    public static void setTelephonyProperty(String property, String value) {
+    @UnsupportedAppUsage
+    public static void setTelephonyProperty(@NonNull String property, @Nullable String value) {
         if (value == null) {
             value = "";
         }
