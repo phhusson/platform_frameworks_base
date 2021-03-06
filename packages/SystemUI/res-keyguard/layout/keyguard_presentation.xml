@@ -22,7 +22,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/presentation"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:background="@android:color/black">
     <!-- This is mostly keyguard_status_view.xml with minor modifications -->
     <com.android.keyguard.KeyguardStatusView
         android:id="@+id/clock"
