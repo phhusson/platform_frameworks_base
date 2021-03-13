@@ -112,6 +112,14 @@ static HalVersion connectPowerHalLocked() {
     if (!gPowerHalHidlExists && !gPowerHalAidlExists) {
         return HalVersion::NONE;
     }
+    if (
+		    gPowerHalAidl_ == nullptr &&
+		    gPowerHalHidlV1_0_ == nullptr) {
+	ALOGE("Trying to connect to Samsung Power HAL");
+        gSehMiscPower = ISehMiscPower::getService();
+        gPowerHalHidlV1_0_ = IPowerV1_0::getService("miscpower");
+	ALOGE("Got miscpower = %d, SehMiscPower = %d", gPowerHalHidlV1_0_ != nullptr ? 1 : 0, gSehMiscPower ? 1 : 0);
+    }
     if (gPowerHalAidlExists) {
         if (!gPowerHalAidl_) {
             gPowerHalAidl_ = waitForVintfService<IPowerAidl>();
@@ -122,12 +130,6 @@ static HalVersion connectPowerHalLocked() {
         } else {
             gPowerHalAidlExists = false;
         }
-    }
-    if (gPowerHalHidlExists && gPowerHalHidlV1_0_ == nullptr) {
-	ALOGE("Trying to connect to Samsung Power HAL");
-        gSehMiscPower = ISehMiscPower::getService();
-        gPowerHalHidlV1_0_ = IPowerV1_0::getService("miscpower");
-	ALOGE("Got miscpower = %d, SehMiscPower = %d", gPowerHalHidlV1_0_ != nullptr ? 1 : 0, gSehMiscPower ? 1 : 0);
     }
     if (gPowerHalHidlExists && gPowerHalHidlV1_0_ == nullptr) {
         gPowerHalHidlV1_0_ = IPowerV1_0::getService();
