@@ -23,6 +23,9 @@ import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import android.hardware.SensorManager;
+import android.hardware.Sensor;
+
 import com.android.internal.R;
 
 /**
@@ -74,7 +77,20 @@ public class AmbientDisplayConfiguration {
 
     /** {@hide} */
     public boolean dozePickupSensorAvailable() {
-        return mContext.getResources().getBoolean(R.bool.config_dozePulsePickup);
+        SensorManager sm = mContext.getSystemService(SensorManager.class);
+        boolean found = false;
+        if(sm == null) {
+            android.util.Log.d("PHH", "Failed getting sensor manager, can't detect pickup sensor");
+        } else {
+            java.util.List<Sensor> sensors = sm.getSensorList(Sensor.TYPE_ALL);
+            for(Sensor s : sensors) {
+                if(Sensor.STRING_TYPE_PICK_UP_GESTURE.equals(s.getStringType())) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return mContext.getResources().getBoolean(R.bool.config_dozePulsePickup) || found;
     }
 
     /** {@hide} */
