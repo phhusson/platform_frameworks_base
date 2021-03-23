@@ -987,10 +987,17 @@ public final class DisplayCutout {
      */
     public static DisplayCutout fromResourcesRectApproximation(Resources res,
             String displayUniqueId, int displayWidth, int displayHeight) {
-        return pathAndDisplayCutoutFromSpec(getDisplayCutoutPath(res, displayUniqueId),
-                getDisplayCutoutApproximationRect(res, displayUniqueId),
-                displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
-                getWaterfallInsets(res, displayUniqueId)).second;
+        try {
+            return pathAndDisplayCutoutFromSpec(getDisplayCutoutPath(res, displayUniqueId),
+                    getDisplayCutoutApproximationRect(res, displayUniqueId),
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    getWaterfallInsets(res, displayUniqueId)).second;
+        } catch(Throwable t) {
+            return pathAndDisplayCutoutFromSpec(getDisplayCutoutPath(res, displayUniqueId),
+                    null,
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    getWaterfallInsets(res, displayUniqueId)).second;
+        }
     }
 
     /**
