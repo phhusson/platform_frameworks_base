@@ -681,9 +681,15 @@ public final class DisplayCutout {
      * @hide
      */
     public static DisplayCutout fromResourcesRectApproximation(Resources res, int displayWidth, int displayHeight) {
-        return fromSpec(res.getString(R.string.config_mainBuiltInDisplayCutoutRectApproximation),
-                displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
-                loadWaterfallInset(res));
+        try {
+            return fromSpec(res.getString(R.string.config_mainBuiltInDisplayCutoutRectApproximation),
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    loadWaterfallInset(res));
+        } catch(java.lang.IllegalArgumentException e) {
+            return fromSpec(res.getString(R.string.config_mainBuiltInDisplayCutout),
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    loadWaterfallInset(res));
+        }
     }
 
     /**
