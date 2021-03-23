@@ -881,10 +881,17 @@ public final class DisplayCutout {
      */
     public static DisplayCutout fromResourcesRectApproximation(Resources res, int displayWidth,
             int displayHeight) {
-        return pathAndDisplayCutoutFromSpec(res.getString(R.string.config_mainBuiltInDisplayCutout),
-                res.getString(R.string.config_mainBuiltInDisplayCutoutRectApproximation),
-                displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
-                loadWaterfallInset(res)).second;
+        try  {
+            return pathAndDisplayCutoutFromSpec(res.getString(R.string.config_mainBuiltInDisplayCutout),
+                    res.getString(R.string.config_mainBuiltInDisplayCutoutRectApproximation),
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    loadWaterfallInset(res)).second;
+        } catch(Throwable t) {
+            return pathAndDisplayCutoutFromSpec(res.getString(R.string.config_mainBuiltInDisplayCutout),
+                    null,
+                    displayWidth, displayHeight, DENSITY_DEVICE_STABLE / (float) DENSITY_DEFAULT,
+                    loadWaterfallInset(res)).second;
+        }
     }
 
     /**
