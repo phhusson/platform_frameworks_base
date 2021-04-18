@@ -2298,9 +2298,9 @@ public final class PowerManagerService extends SystemService
                     if (now < nextTimeout) {
                         if (getWakefulnessLocked() == WAKEFULNESS_AWAKE) {
                             if (now > mLastUserActivityTime + BUTTON_ON_DURATION) {
-                                mButtonsLight.setBrightness(PowerManager.BRIGHTNESS_OFF_FLOAT);
+                                if(mButtonsLight != null) mButtonsLight.setBrightness(PowerManager.BRIGHTNESS_OFF_FLOAT);
                             } else {
-                                mButtonsLight.setBrightness(mScreenBrightnessSettingDefault);
+                                if(mButtonsLight != null) mButtonsLight.setBrightness(mScreenBrightnessSettingDefault);
                                 nextTimeout = now + BUTTON_ON_DURATION;
                             }
                         }
@@ -2310,7 +2310,7 @@ public final class PowerManagerService extends SystemService
                         if (now < nextTimeout) {
                             mUserActivitySummary = USER_ACTIVITY_SCREEN_DIM;
                             if (getWakefulnessLocked() == WAKEFULNESS_AWAKE) {
-                                mButtonsLight.setBrightness(PowerManager.BRIGHTNESS_OFF_FLOAT);
+                                if(mButtonsLight != null) mButtonsLight.setBrightness(PowerManager.BRIGHTNESS_OFF_FLOAT);
                             }
                         }
                     }
