@@ -62,6 +62,7 @@ import com.android.server.display.whitebalance.DisplayWhiteBalanceController;
 import com.android.server.display.whitebalance.DisplayWhiteBalanceFactory;
 import com.android.server.display.whitebalance.DisplayWhiteBalanceSettings;
 import com.android.server.lights.LightsManager;
+import com.android.server.lights.LogicalLight;
 import com.android.server.policy.WindowManagerPolicy;
 
 import java.io.PrintWriter;
