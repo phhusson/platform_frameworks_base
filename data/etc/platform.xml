@@ -252,6 +252,8 @@
     <allow-in-power-save package="com.android.cellbroadcastreceiver.module" />
     <allow-in-power-save package="com.android.cellbroadcastreceiver" />
     <allow-in-power-save package="com.android.shell" />
+    <!-- fix sound channels in calls (stop unloading treble-app) -->
+    <allow-in-power-save package="me.phh.treble.app" />
 
     <!-- Whitelist system providers -->
     <allow-in-power-save-except-idle package="com.android.providers.calendar" />
