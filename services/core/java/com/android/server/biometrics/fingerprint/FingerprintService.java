@@ -126,6 +126,7 @@ public class FingerprintService extends BiometricServiceBase {
         }
     }
 
+    private FacolaView mFacola;
     private final class FingerprintAuthClient extends AuthenticationClientImpl {
         private final boolean mDetectOnly;
 
@@ -187,6 +188,34 @@ public class FingerprintService extends BiometricServiceBase {
         boolean isDetectOnly() {
             return mDetectOnly;
         }
+
+	        @Override
+        public boolean onAcquired(int acquiredInfo, int vendorCode) {
+            boolean result = super.onAcquired(acquiredInfo, vendorCode);
+            if(result) mFacola.hide();
+            return result;
+        }
+
+        @Override
+        public boolean onAuthenticated(BiometricAuthenticator.Identifier identifier,
+            boolean authenticated, ArrayList<Byte> token) {
+            boolean result = super.onAuthenticated(identifier, authenticated, token);
+            if(result) mFacola.hide();
+            return result;
+        }
+
+
+        @Override
+        public int start() {
+            mFacola.show();
+            return super.start();
+        }
+
+        @Override
+        public int stop(boolean initiatedByClient) {
+            mFacola.hide();
+            return super.stop(initiatedByClient);
+        }
     }
 
     /**
@@ -216,6 +245,7 @@ public class FingerprintService extends BiometricServiceBase {
                 final IFingerprintServiceReceiver receiver, final int flags,
                 final String opPackageName) {
             checkPermission(MANAGE_FINGERPRINT);
+	    mFacola.show();
 
             final boolean restricted = isRestricted();
             final int groupId = userId; // default group for fingerprint enrollment
@@ -707,6 +737,9 @@ public class FingerprintService extends BiometricServiceBase {
         public void onError(final long deviceId, final int error, final int vendorCode) {
             mHandler.post(() -> {
                 FingerprintService.super.handleError(deviceId, error, vendorCode);
+		if ( error == BiometricConstants.BIOMETRIC_ERROR_CANCELED) {
+			mFacola.hide();
+		}
                 // TODO: this chunk of code should be common to all biometric services
                 if (error == BiometricConstants.BIOMETRIC_ERROR_HW_UNAVAILABLE) {
                     // If we get HW_UNAVAILABLE, try to connect again later...
@@ -794,6 +827,7 @@ public class FingerprintService extends BiometricServiceBase {
                 Slog.w(TAG, "enroll(): no fingerprint HAL!");
                 return ERROR_ESRCH;
             }
+	    mFacola.show();
             return daemon.enroll(cryptoToken, groupId, timeout);
         }
 
@@ -813,6 +847,7 @@ public class FingerprintService extends BiometricServiceBase {
         context.registerReceiver(mLockoutReceiver, new IntentFilter(getLockoutResetIntent()),
                 getLockoutBroadcastPermission(), null /* handler */);
         mLockPatternUtils = new LockPatternUtils(context);
+	mFacola = new FacolaView(context);
     }
 
     @Override
