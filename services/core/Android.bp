@@ -138,6 +138,12 @@ java_library_static {
         "netd_aidl_interfaces-platform-java",
         "overlayable_policy_aidl-java",
         "SurfaceFlingerProperties",
+        "vendor.goodix.extend.service-V2.0-java",
+        "vendor.goodix.hardware.biometrics.fingerprint-V2.1-java",
+        "vendor.samsung.hardware.biometrics.fingerprint-V2.1-java",
+        "vendor.samsung.hardware.biometrics.fingerprint-V3.0-java",
+        "vendor.oppo.hardware.biometrics.fingerprint-V2.1-java",
+        "vendor.xiaomi.hardware.fingerprintextension-V1.0-java",
     ],
 }
 
