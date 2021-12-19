@@ -28,6 +28,10 @@ import android.util.Slog;
 
 import com.android.server.biometrics.sensors.AcquisitionClient;
 
+import vendor.goodix.hardware.biometrics.fingerprint.V2_1.IGoodixFingerprintDaemon;
+
+import java.io.PrintWriter;
+
 /**
  * Contains helper methods for under-display fingerprint HIDL.
  */
@@ -35,37 +39,120 @@ public class UdfpsHelper {
 
     private static final String TAG = "UdfpsHelper";
 
+    private static void writeFile(String path, String value) {
+        try {
+            PrintWriter writer = new PrintWriter(path, "UTF-8");
+            writer.println(value);
+            writer.close();
+        } catch(Exception e) {
+            android.util.Log.d("PHH", "Failed writing to " + path + ": " + value);
+        }
+    }
+
+
     public static void onFingerDown(IBiometricsFingerprint daemon, int x, int y, float minor,
             float major) {
         android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint extension =
-                android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint.castFrom(
-                        daemon);
-        if (extension == null) {
-            Slog.v(TAG, "onFingerDown | failed to cast the HIDL to V2_3");
-            return;
+            android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint.castFrom(
+                    daemon);
+        if (extension != null) {
+            try {
+                extension.onFingerDown(x, y, minor, major);
+                return;
+            } catch (RemoteException e) {
+                Slog.e(TAG, "onFingerDown | RemoteException: ", e);
+            }
         }
 
         try {
-            extension.onFingerDown(x, y, minor, major);
-        } catch (RemoteException e) {
-            Slog.e(TAG, "onFingerDown | RemoteException: ", e);
+            // Asus goodix commands
+            IGoodixFingerprintDaemon goodixDaemon = IGoodixFingerprintDaemon.getService();
+            if(android.os.SystemProperties.get("ro.vendor.build.fingerprint").contains("ASUS")) {
+                goodixDaemon.sendCommand(200001, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
+                    Slog.e(TAG, "Goodix send command returned code "+ returnCode);
+                });
+            } else {
+                //UI READY
+                goodixDaemon.sendCommand(0x600, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
+                    Slog.e(TAG, "Goodix send command returned code "+ returnCode);
+                });
+                goodixDaemon.sendCommand(1607, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
+                    Slog.e(TAG, "Goodix send command returned code "+ returnCode);
+                });
+            }
+            return;
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending goodix daemon cmd failed", t);
         }
+
+        try {
+            vendor.oplus.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint fp = vendor.oplus.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
+            writeFile("/sys/kernel/oppo_display/notify_fppress", "1");
+            writeFile("/sys/kernel/oplus_display/oplus_notify_fppress", "1");
+            fp.touchDown();
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending oplus daemon cmd failed", t);
+        }
+
+        try {
+            vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint fp = vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
+            writeFile("/sys/kernel/oppo_display/notify_fppress", "1");
+            writeFile("/sys/kernel/oplus_display/oplus_notify_fppress", "1");
+            fp.touchDown();
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending oplus daemon cmd failed", t);
+        }
+
+        Slog.v(TAG, "onFingerDown | failed to cast the HIDL to V2_3");
     }
 
     public static void onFingerUp(IBiometricsFingerprint daemon) {
         android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint extension =
-                android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint.castFrom(
-                        daemon);
-        if (extension == null) {
-            Slog.v(TAG, "onFingerUp | failed to cast the HIDL to V2_3");
-            return;
+            android.hardware.biometrics.fingerprint.V2_3.IBiometricsFingerprint.castFrom(
+                    daemon);
+        if (extension != null) {
+            try {
+                extension.onFingerUp();
+                return;
+            } catch (RemoteException e) {
+                Slog.e(TAG, "onFingerUp | RemoteException: ", e);
+            }
         }
 
         try {
-            extension.onFingerUp();
-        } catch (RemoteException e) {
-            Slog.e(TAG, "onFingerUp | RemoteException: ", e);
+            IGoodixFingerprintDaemon goodixDaemon = IGoodixFingerprintDaemon.getService();
+            if(android.os.SystemProperties.get("ro.vendor.build.fingerprint").contains("ASUS")) {
+                goodixDaemon.sendCommand(200003, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
+                    Slog.e(TAG, "Goodix send command returned code " + returnCode);
+                });
+            } else {
+                goodixDaemon.sendCommand(0x601, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
+                    Slog.e(TAG, "Goodix send command returned code "+ returnCode);
+                });
+            }
+            return;
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending goodix daemon cmd failed", t);
         }
+
+        try {
+            vendor.oplus.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint fp = vendor.oplus.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
+            writeFile("/sys/kernel/oppo_display/notify_fppress", "0");
+            writeFile("/sys/kernel/oplus_display/oplus_notify_fppress", "0");
+            fp.touchUp();
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending oplus daemon cmd failed", t);
+        }
+
+        try {
+            vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint fp = vendor.oppo.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint.getService();
+            writeFile("/sys/kernel/oppo_display/notify_fppress", "0");
+            writeFile("/sys/kernel/oplus_display/oplus_notify_fppress", "0");
+            fp.touchUp();
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending oplus daemon cmd failed", t);
+        }
+        Slog.v(TAG, "onFingerUp | failed to cast the HIDL to V2_3");
     }
 
     public static int getReasonFromEnrollReason(@FingerprintManager.EnrollReason int reason) {
