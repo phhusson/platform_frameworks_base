@@ -69,7 +69,7 @@ public class UdfpsSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
         mSensorPaint = new Paint(0 /* flags */);
         mSensorPaint.setAntiAlias(true);
-        mSensorPaint.setARGB(255, 255, 255, 255);
+        mSensorPaint.setARGB(255, 0, 255, 0);
         mSensorPaint.setStyle(Paint.Style.FILL);
     }
 
