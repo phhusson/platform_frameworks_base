@@ -41,6 +41,12 @@ import com.android.systemui.R;
 import com.android.systemui.biometrics.UdfpsHbmTypes.HbmType;
 import com.android.systemui.doze.DozeReceiver;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.PrintWriter;
+
+
 /**
  * A view containing 1) A SurfaceView for HBM, and 2) A normal drawable view for all other
  * animations.
@@ -50,7 +56,7 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
 
     private static final String SETTING_HBM_TYPE =
             "com.android.systemui.biometrics.UdfpsSurfaceView.hbmType";
-    private static final @HbmType int DEFAULT_HBM_TYPE = UdfpsHbmTypes.LOCAL_HBM;
+    private static final @HbmType int DEFAULT_HBM_TYPE = UdfpsHbmTypes.GLOBAL_HBM;
 
     private static final int DEBUG_TEXT_SIZE_PX = 32;
 
@@ -69,6 +75,49 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
     @Nullable private UdfpsHbmProvider mHbmProvider;
     @Nullable private String mDebugMessage;
     private boolean mIlluminationRequested;
+
+    public static void samsungCmd(String cmd) {
+	    try {
+		    writeFile("/sys/devices/virtual/sec/tsp/cmd", cmd);
+
+		    String status = readFile("/sys/devices/virtual/sec/tsp/cmd_status");
+		    String ret = readFile("/sys/devices/virtual/sec/tsp/cmd_result");
+
+		    android.util.Log.d("PHH", "Sending command " + cmd + " returned " + ret + ":" + status);
+	    } catch(Exception e) {
+		    android.util.Log.d("PHH", "Failed sending command " + cmd, e);
+	    }
+    }
+    private static void writeFile(String path, String value) {
+	    try {
+		    PrintWriter writer = new PrintWriter(path, "UTF-8");
+		    writer.println(value);
+		    writer.close();
+	    } catch(Exception e) {
+		    android.util.Log.d("PHH", "Failed writing to " + path + ": " + value);
+	    }
+    }
+
+    private static void writeFile(File file, String value) {
+	    try {
+		    PrintWriter writer = new PrintWriter(file, "UTF-8");
+		    writer.println(value);
+		    writer.close();
+	    } catch(Exception e) {
+		    android.util.Log.d("PHH", "Failed writing to " + file + ": " + value);
+	    }
+    }
+    private static String readFile(String path) {
+	    try {
+		    File f = new File(path);
+
+		    BufferedReader b = new BufferedReader(new FileReader(f));
+		    return b.readLine();
+	    } catch(Exception e) {
+		    return null;
+	    }
+    }
+
 
     public UdfpsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -239,7 +288,7 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
         if (mGhbmView != null && surface == null) {
             Log.e(TAG, "doIlluminate | surface must be non-null for GHBM");
         }
-        mHbmProvider.enableHbm(mHbmType, surface, () -> {
+        if(mHbmProvider != null) mHbmProvider.enableHbm(mHbmType, surface, () -> {
             if (mGhbmView != null) {
                 mGhbmView.drawIlluminationDot(mSensorRect);
             }
@@ -251,6 +300,11 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
                 Log.w(TAG, "doIlluminate | onIlluminatedRunnable is null");
             }
         });
+	else {
+		if (mGhbmView != null) {
+			mGhbmView.drawIlluminationDot(mSensorRect);
+		}
+	}
     }
 
     @Override
@@ -263,6 +317,6 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
             mGhbmView.setGhbmIlluminationListener(null);
             mGhbmView.setVisibility(View.INVISIBLE);
         }
-        mHbmProvider.disableHbm(null /* onHbmDisabled */);
+        if(mHbmProvider != null) mHbmProvider.disableHbm(null /* onHbmDisabled */);
     }
 }
