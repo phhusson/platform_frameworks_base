@@ -1002,13 +1002,17 @@ public class AuthService extends SystemService {
             isUdfps = true;
         }
 
-	if(udfpsProps.length > 0) {
-	    Slog.d("PHH-Enroll", "Samsung got udfps infos " + udfpsProps[0] + ", " + udfpsProps[1] + ", " + udfpsProps[2]);
-	}
+        if(udfpsProps.length > 0) {
+                Slog.d("PHH-Enroll", "Got udfps infos " + udfpsProps[0] + ", " + udfpsProps[1] + ", " + udfpsProps[2]);
+        }
 
         final @FingerprintSensorProperties.SensorType int sensorType;
         if (isUdfps) {
-            sensorType = FingerprintSensorProperties.TYPE_UDFPS_OPTICAL;
+            if(android.os.SystemProperties.getBoolean("persist.sys.phh.ultrasonic_udfps", false)) {
+                sensorType = FingerprintSensorProperties.TYPE_UDFPS_ULTRASONIC;
+            } else {
+                sensorType = FingerprintSensorProperties.TYPE_UDFPS_OPTICAL;
+            }
         } else if (isPowerbuttonFps) {
             sensorType = FingerprintSensorProperties.TYPE_POWER_BUTTON;
         } else {
