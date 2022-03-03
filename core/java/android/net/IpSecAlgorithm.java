@@ -385,7 +385,7 @@ public final class IpSecAlgorithm implements Parcelable {
                 isValidTruncLen = truncLen >= 96 && truncLen <= 128;
                 break;
             case AUTH_HMAC_SHA1:
-                isValidLen = keyLen == 160;
+                isValidLen = true;
                 isValidTruncLen = truncLen >= 96 && truncLen <= 160;
                 break;
             case AUTH_HMAC_SHA256:
