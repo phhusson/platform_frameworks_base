@@ -104,6 +104,7 @@ public class AuthService extends SystemService {
     final IAuthService.Stub mImpl;
 
     private FileObserver fodFileObserver = null;
+    private FileObserver fodFileObserver2 = null;
     private ISehBiometricsFingerprint mSamsungFingerprint = null;
 
     /**
@@ -690,19 +691,22 @@ public class AuthService extends SystemService {
             };
             fodFileObserver.startWatching();
         }
-        String asusSpotOnAchieved = "/sys/class/drm/spot_on_achieved";
-        if( (new File(asusSpotOnAchieved)).exists()) {
-            fodFileObserver = new FileObserver(asusSpotOnAchieved, FileObserver.MODIFY) {
+
+        String asusGhbmOnAchieved = "/sys/class/drm/ghbm_on_achieved";
+        if( (new File(asusGhbmOnAchieved)).exists()) {
+            fodFileObserver2 = new FileObserver(asusGhbmOnAchieved, FileObserver.MODIFY) {
                 boolean wasOn = false;
                 @Override
                 public void onEvent(int event, String path) {
-                    String spotOn = readFile(asusSpotOnAchieved);
+                    String spotOn = readFile(asusGhbmOnAchieved);
                     if("1".equals(spotOn)) {
                         if(!wasOn) {
                             try {
                                 IGoodixFingerprintDaemon goodixDaemon = IGoodixFingerprintDaemon.getService();
+
+                                //Send UI ready
                                 goodixDaemon.sendCommand(200002, new java.util.ArrayList<Byte>(), (returnCode, resultData) -> {
-                                    Slog.e(TAG, "Goodix send command returned code "+ returnCode);
+                                    Slog.e(TAG, "Goodix send command touch pressed returned code "+ returnCode);
                                 });
                             } catch(Throwable t) {
                                 Slog.d("PHH-Enroll", "Failed sending goodix command", t);
@@ -714,7 +718,7 @@ public class AuthService extends SystemService {
                     }
                 }
             };
-            fodFileObserver.startWatching();
+            fodFileObserver2.startWatching();
         }
     }
 
