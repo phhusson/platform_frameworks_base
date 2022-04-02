@@ -694,6 +694,8 @@ public class Fingerprint21 implements IHwBinder.DeathRecipient, ServiceProvider 
 
     private void scheduleInternalCleanup(int userId,
             @Nullable BaseClientMonitor.Callback callback) {
+	final boolean mNocleanup = android.os.SystemProperties.getBoolean("persist.sys.phh.fingerprint.nocleanup", false);
+	if(mNocleanup) return;
         mHandler.post(() -> {
             scheduleUpdateActiveUserWithoutHandler(userId);
 
