@@ -65,7 +65,7 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
     @NonNull private final Paint mDebugTextPaint;
     private final float mSensorTouchAreaCoefficient;
     private final int mOnIlluminatedDelayMs;
-    private final @HbmType int mHbmType;
+    private @HbmType int mHbmType;
 
     // Only used for UdfpsHbmTypes.GLOBAL_HBM.
     @Nullable private UdfpsSurfaceView mGhbmView;
@@ -151,6 +151,8 @@ public class UdfpsView extends FrameLayout implements DozeReceiver, UdfpsIllumin
                     SETTING_HBM_TYPE, DEFAULT_HBM_TYPE, UserHandle.USER_CURRENT);
         } else {
             mHbmType = DEFAULT_HBM_TYPE;
+            if(android.os.SystemProperties.getBoolean("persist.sys.phh.ultrasonic_udfps", false))
+                mHbmType = UdfpsHbmTypes.LOCAL_HBM;
         }
     }
 
