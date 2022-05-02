@@ -24,6 +24,7 @@ import android.os.RemoteException;
 import android.util.Slog;
 
 import vendor.goodix.hardware.biometrics.fingerprint.V2_1.IGoodixFingerprintDaemon;
+import vendor.samsung.hardware.biometrics.fingerprint.V3_0.ISehBiometricsFingerprint;
 
 import java.io.PrintWriter;
 
@@ -57,6 +58,17 @@ public class UdfpsHelper {
             } catch (RemoteException e) {
                 Slog.e(TAG, "onFingerDown | RemoteException: ", e);
             }
+        }
+
+        try {
+            if("true".equals(android.os.SystemProperties.get("persist.sys.phh.ultrasonic_udfps"))) {
+                Slog.e(TAG, "trying ultrasonic samsung pressed");
+                ISehBiometricsFingerprint fp = ISehBiometricsFingerprint.getService();
+                fp.sehRequest(22 /* SEM_FINGER_STATE */, 2 /* finger pressed */, new java.util.ArrayList<Byte>(),
+                        (int retval, java.util.ArrayList<Byte> out) -> {} );
+            }
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending Samsung command failed");
         }
 
         try {
@@ -112,6 +124,17 @@ public class UdfpsHelper {
             } catch (RemoteException e) {
                 Slog.e(TAG, "onFingerUp | RemoteException: ", e);
             }
+        }
+
+        try {
+            if("true".equals(android.os.SystemProperties.get("persist.sys.phh.ultrasonic_udfps"))) {
+                Slog.e(TAG, "trying ultrasonic samsung released");
+                ISehBiometricsFingerprint fp = ISehBiometricsFingerprint.getService();
+                fp.sehRequest(22 /* SEM_FINGER_STATE */, 1 /* finger pressed */, new java.util.ArrayList<Byte>(),
+                        (int retval, java.util.ArrayList<Byte> out) -> {} );
+            }
+        } catch(Throwable t) {
+            Slog.e(TAG, "Tried sending Samsung command failed");
         }
 
         try {
