@@ -1364,9 +1364,13 @@ public class Environment {
         return !defaultScopedStorage && !forceEnableScopedStorage;
     }
 
+    /**
+     * Huawei hi6250 define in init.hi6250.rc ANDROID_STORAGE to "", so check empty string and replace with
+     * default path. Apply change for all directory
+     */
     static File getDirectory(String variableName, String defaultPath) {
         String path = System.getenv(variableName);
-        return path == null ? new File(defaultPath) : new File(path);
+        return ((path == null || path.isEmpty()) ? new File(defaultPath) : new File(path));
     }
 
     /** {@hide} */
